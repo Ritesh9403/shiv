@@ -1,0 +1,103 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+struct Node {
+    char name[20];
+    Node *next, *down;
+    int flag;
+};
+
+class Gll {
+    Node *head = nullptr;
+public:
+    Node *create();
+    void insertb();
+    void insert(char type);
+    void display();
+};
+
+Node* Gll::create() {
+    Node *p = new Node;
+    p->next = p->down = nullptr;
+    p->flag = 0;
+    cout << "\nEnter the name: ";
+    cin >> p->name;
+    return p;
+}
+
+void Gll::insertb() {
+    if (!head) head = create();
+    else cout << "\nBook already exists";
+}
+
+void Gll::insert(char type) {
+    if (!head) cout << "\nThere is no book";
+    else {
+        cout << "\nEnter the name of " << ((type == 'c') ? "chapter" : "section") << ": ";
+        char name[20];
+        cin >> name;
+        Node *temp = head;
+        while (temp) {
+            if (temp->flag) {
+                temp = (type == 'c') ? temp->down : temp->next;
+                continue;
+            }
+            if (!strcmp(temp->name, name)) {
+                Node *newNode = create();
+                Node *current = (type == 'c') ? temp->down : temp->next;
+                if (!current) temp->down = newNode;
+                else {
+                    while (current->next) current = current->next;
+                    current->next = newNode;
+                }
+                temp->flag = 1;
+                break;
+            }
+            temp = temp->next;
+        }
+        if (!temp) cout << "\nNo such " << ((type == 'c') ? "chapter" : "section") << " found";
+    }
+}
+
+void Gll::display() {
+    if (!head) cout << "\nBook does not exist";
+    else {
+        Node *temp = head;
+        cout << "\nBOOK: " << temp->name;
+        temp = temp->down;
+        while (temp) {
+            cout << "\n\tCHAPTER: " << temp->name;
+            Node *current = temp->down;
+            while (current) {
+                cout << "\n\t\tSECTION: " << current->name;
+                current = current->next;
+            }
+            temp = temp->next;
+        }
+    }
+}
+
+int main() {
+    Gll g;
+    while (true) {
+        cout << "\n\nMenu:";
+        cout << "\n1. Insert book";
+        cout << "\n2. Insert chapter";
+        cout << "\n3. Insert section";
+        cout << "\n4. Display book";
+        cout << "\n5. Exit";
+        cout << "\nEnter your choice: ";
+        int choice;
+        cin >> choice;
+        switch (choice) {
+            case 1: g.insertb(); break;
+            case 2: g.insert('c'); break;
+            case 3: g.insert('s'); break;
+            case 4: g.display(); break;
+            case 5: exit(0);
+            default: cout << "\nInvalid choice!";
+        }
+    }
+    return 0;
+}
