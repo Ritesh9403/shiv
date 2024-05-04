@@ -1,0 +1,155 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+class HashFunction {
+    struct Hash {
+        long key;
+        string name;
+    };
+    Hash h[10];
+public:
+    HashFunction() {
+        for (int i = 0; i < 10; i++) {
+            h[i].key = -1;
+            h[i].name = "NULL";
+        }
+    }
+    void insert();
+    void display();
+    int find(long);
+    void Delete(long);
+};
+
+void HashFunction::Delete(long k) {
+    int index = find(k);
+    if (index != -1) {
+        h[index].key = -1;
+        h[index].name = "NULL";
+        cout << "\n\tKey is Deleted";
+    } else {
+        cout << "\n\tKey Not Found";
+    }
+}
+
+int HashFunction::find(long k) {
+    for (int i = 0; i < 10; i++) {
+        if (h[i].key == k) {
+            cout << "\n\t" << h[i].key << " is Found at " << i << " Location With Name " << h[i].name;
+            return i;
+        }
+    }
+    return -1;
+}
+
+void HashFunction::display() {
+    cout << "\n\t\tKey\t\tName";
+    for (int i = 0; i < 10; i++) {
+        cout << "\n\th[" << i << "]\t" << h[i].key << "\t\t" << h[i].name;
+    }
+}
+
+void HashFunction::insert() {
+    char ans;
+    long k;
+    string n;
+    int cnt = 0;
+    do {
+        if (cnt >= 10) {
+            cout << "\n\tHash Table is FULL";
+            break;
+        }
+        cout << "\n\tEnter a Telephone No: ";
+        cin >> k;
+        cout << "\n\tEnter a Client Name: ";
+        cin >> n;
+        int hi = k % 10;
+        if (h[hi].key == -1) {
+            h[hi].key = k;
+            h[hi].name = n;
+        } else {
+            if (h[hi].key % 10 != hi) {
+                long temp = h[hi].key;
+                string ntemp = h[hi].name;
+                h[hi].key = k;
+                h[hi].name = n;
+                int flag = 0;
+                for (int i = hi + 1; i < 10; i++) {
+                    if (h[i].key == -1) {
+                        h[i].key = temp;
+                        h[i].name = ntemp;
+                        flag = 1;
+                        break;
+                    }
+                }
+                if (!flag) {
+                    for (int i = 0; i < hi; i++) {
+                        if (h[i].key == -1) {
+                            h[i].key = temp;
+                            h[i].name = ntemp;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                int flag = 0;
+                for (int i = hi + 1; i < 10; i++) {
+                    if (h[i].key == -1) {
+                        h[i].key = k;
+                        h[i].name = n;
+                        flag = 1;
+                        break;
+                    }
+                }
+                if (!flag) {
+                    for (int i = 0; i < hi; i++) {
+                        if (h[i].key == -1) {
+                            h[i].key = k;
+                            h[i].name = n;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        cnt++;
+        cout << "\n\t ..... Do You Want to Insert More Key: y/n";
+        cin >> ans;
+    } while (ans == 'y' || ans == 'Y');
+}
+
+int main() {
+    long k;
+    int ch, index;
+    char ans;
+    HashFunction obj;
+    do {
+        cout << "\n\t***** Telephone (ADT) *****";
+        cout << "\n\t1. Insert\n\t2. Display\n\t3. Find\n\t4. Delete\n\t5. Exit";
+        cout << "\n\t ..... Enter Your Choice: ";
+        cin >> ch;
+        switch (ch) {
+            case 1:
+                cout << "******* INPUT YOUR VALUES *******";
+                obj.insert();
+                break;
+            case 2:
+                cout << "******* DISPLAY THE CONTENTS *******";
+                obj.display();
+                break;
+            case 3:
+                cout << "\n\tEnter a Key Which You Want to Search: ";
+                cin >> k;
+                index = obj.find(k);
+                break;
+            case 4:
+                cout << "\n\tEnter a Key Which You Want to Delete: ";
+                cin >> k;
+                obj.Delete(k);
+                break;
+        }
+        cout << "\n\t ..... Do You Want to Continue in Main Menu:y/n ";
+        cin >> ans;
+    } while (ans == 'y' || ans == 'Y');
+    return 0;
+}
