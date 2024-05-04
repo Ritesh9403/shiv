@@ -1,0 +1,112 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int value;
+    Node* next;
+};
+
+class Hashing {
+private:
+    Node* HashTable[10];
+
+    int HashFunction(int value) {
+        return (value % 10);
+    }
+
+public:
+    Hashing() {
+        for (int i = 0; i < 10; i++)
+            HashTable[i] = nullptr;
+    }
+
+    void insertElement(int value) {
+        int hash_val = HashFunction(value);
+        Node* head = new Node;
+        head->value = value;
+        head->next = nullptr;
+
+        if (HashTable[hash_val] == nullptr)
+            HashTable[hash_val] = head;
+        else {
+            Node* temp = HashTable[hash_val];
+            while (temp->next != nullptr)
+                temp = temp->next;
+            temp->next = head;
+        }
+    }
+
+    void display() {
+        for (int i = 0; i < 10; i++) {
+            cout << "a[" << i << "] : ";
+            Node* temp = HashTable[i];
+            while (temp != nullptr) {
+                cout << "->" << temp->value;
+                temp = temp->next;
+            }
+            cout << "\n";
+        }
+    }
+
+    int searchElement(int value) {
+        int hash_val = HashFunction(value);
+        Node* entry = HashTable[hash_val];
+        while (entry != nullptr) {
+            if (entry->value == value) {
+                cout << hash_val << ":" << entry->value << endl;
+                return hash_val;
+            }
+            entry = entry->next;
+        }
+        return -1;
+    }
+
+    void deleteElement(int value) {
+        int hash_val = HashFunction(value);
+        Node* entry = HashTable[hash_val];
+        if (entry == nullptr) {
+            cout << "No Element found";
+            return;
+        }
+        if (entry->value == value) {
+            HashTable[hash_val] = entry->next;
+            return;
+        }
+        while ((entry->next)->value != value)
+            entry = entry->next;
+        entry->next = (entry->next)->next;
+    }
+};
+
+int main() {
+    int ch, data, search, del;
+    Hashing h;
+    do {
+        cout << "\nTelephone:\n1.Insert\n2.Display\n3.Search\n4.Delete\n5.Exit\n\nOPTION:";
+        cin >> ch;
+        switch (ch) {
+            case 1:
+                cout << "\nEnter phone no. to be inserted:";
+                cin >> data;
+                h.insertElement(data);
+                break;
+            case 2:
+                h.display();
+                break;
+            case 3:
+                cout << "\nEnter the no. to be searched:";
+                cin >> search;
+                if (h.searchElement(search) == -1)
+                    cout << "No element found at key";
+                break;
+            case 4:
+                cout << "\nEnter the ph no. to be deleted:";
+                cin >> del;
+                h.deleteElement(del);
+                cout << "Ph no. Deleted" << endl;
+                break;
+        }
+    } while (ch != 5);
+
+    return 0;
+}
